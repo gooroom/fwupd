@@ -1,3 +1,11 @@
+fwupd (1.5.7-4+grm3u1) unstable; urgency=medium
+
+  [ jongkyung.woo ]
+  * [a3d8df85] Modified efi_sbat_distro to gooroom
+  * [f99f669a] Rebuild on gooroom-3.0
+
+ -- Gooroom Autobuilder <jenkins@gooroom.kr>  Mon, 29 Aug 2022 14:08:24 +0900
+
 fwupd (1.5.7-4) unstable; urgency=medium
 
   * Multiple fixes for working with UEFI SBAT
