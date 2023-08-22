@@ -648,3 +648,279 @@ LIBFWUPD_1.5.6 {
     fwupd_release_get_locations;
   local: *;
 } LIBFWUPD_1.5.5;
+
+LIBFWUPD_1.5.8 {
+  global:
+    fwupd_device_add_protocol;
+    fwupd_device_get_protocols;
+    fwupd_device_has_protocol;
+  local: *;
+} LIBFWUPD_1.5.6;
+
+LIBFWUPD_1.6.0 {
+  global:
+    fwupd_device_get_composite_id;
+    fwupd_device_set_composite_id;
+  local: *;
+} LIBFWUPD_1.5.8;
+
+LIBFWUPD_1.6.1 {
+  global:
+    fwupd_remote_set_filename_source;
+    fwupd_remote_setup;
+    fwupd_version_string;
+  local: *;
+} LIBFWUPD_1.6.0;
+
+LIBFWUPD_1.6.2 {
+  global:
+    fwupd_device_get_version_build_date;
+    fwupd_device_has_icon;
+    fwupd_device_remove_child;
+    fwupd_device_set_version_build_date;
+    fwupd_remote_to_json;
+    fwupd_request_from_variant;
+    fwupd_request_get_created;
+    fwupd_request_get_device_id;
+    fwupd_request_get_id;
+    fwupd_request_get_image;
+    fwupd_request_get_kind;
+    fwupd_request_get_message;
+    fwupd_request_get_type;
+    fwupd_request_kind_from_string;
+    fwupd_request_kind_to_string;
+    fwupd_request_new;
+    fwupd_request_set_created;
+    fwupd_request_set_device_id;
+    fwupd_request_set_id;
+    fwupd_request_set_image;
+    fwupd_request_set_kind;
+    fwupd_request_set_message;
+    fwupd_request_to_string;
+    fwupd_request_to_variant;
+  local: *;
+} LIBFWUPD_1.6.1;
+
+LIBFWUPD_1.7.0 {
+  global:
+    fwupd_security_attr_add_guid;
+    fwupd_security_attr_add_guids;
+    fwupd_security_attr_get_guids;
+    fwupd_security_attr_has_guid;
+  local: *;
+} LIBFWUPD_1.6.2;
+
+LIBFWUPD_1.7.1 {
+  global:
+    fwupd_client_add_hint;
+    fwupd_client_get_host_security_events;
+    fwupd_client_get_host_security_events_async;
+    fwupd_client_get_host_security_events_finish;
+    fwupd_security_attr_copy;
+    fwupd_security_attr_flag_from_string;
+    fwupd_security_attr_from_json;
+    fwupd_security_attr_get_created;
+    fwupd_security_attr_get_result_fallback;
+    fwupd_security_attr_result_from_string;
+    fwupd_security_attr_set_created;
+    fwupd_security_attr_set_result_fallback;
+  local: *;
+} LIBFWUPD_1.7.0;
+
+LIBFWUPD_1.7.2 {
+  global:
+    fwupd_release_get_id;
+    fwupd_release_set_id;
+  local: *;
+} LIBFWUPD_1.7.1;
+
+LIBFWUPD_1.7.3 {
+  global:
+    fwupd_client_get_host_bkc;
+    fwupd_release_add_tag;
+    fwupd_release_get_tags;
+    fwupd_release_has_tag;
+  local: *;
+} LIBFWUPD_1.7.2;
+
+LIBFWUPD_1.7.4 {
+  global:
+    fwupd_device_get_root;
+  local: *;
+} LIBFWUPD_1.7.3;
+
+LIBFWUPD_1.7.6 {
+  global:
+    fwupd_device_add_issue;
+    fwupd_device_get_issues;
+  local: *;
+} LIBFWUPD_1.7.4;
+
+LIBFWUPD_1.8.0 {
+  global:
+    fwupd_client_disconnect;
+    fwupd_client_get_only_trusted;
+  local: *;
+} LIBFWUPD_1.7.6;
+
+LIBFWUPD_1.8.1 {
+  global:
+    fwupd_client_get_battery_level;
+    fwupd_client_get_battery_threshold;
+    fwupd_device_add_problem;
+    fwupd_device_get_battery_level;
+    fwupd_device_get_battery_threshold;
+    fwupd_device_get_problems;
+    fwupd_device_has_problem;
+    fwupd_device_problem_from_string;
+    fwupd_device_problem_to_string;
+    fwupd_device_remove_problem;
+    fwupd_device_set_battery_level;
+    fwupd_device_set_battery_threshold;
+    fwupd_device_set_problems;
+  local: *;
+} LIBFWUPD_1.8.0;
+
+LIBFWUPD_1.8.2 {
+  global:
+    fwupd_client_get_host_vendor;
+    fwupd_device_to_json_full;
+    fwupd_remote_set_checksum;
+    fwupd_remote_set_filename_cache;
+    fwupd_security_attr_get_description;
+    fwupd_security_attr_get_title;
+    fwupd_security_attr_set_description;
+    fwupd_security_attr_set_title;
+  local: *;
+} LIBFWUPD_1.8.1;
+
+LIBFWUPD_1.8.3 {
+  global:
+    fwupd_device_from_json;
+    fwupd_security_attr_remove_flag;
+  local: *;
+} LIBFWUPD_1.8.2;
+
+LIBFWUPD_1.8.4 {
+  global:
+    fwupd_bios_setting_add_possible_value;
+    fwupd_bios_setting_array_from_variant;
+    fwupd_bios_setting_from_json;
+    fwupd_bios_setting_from_variant;
+    fwupd_bios_setting_get_current_value;
+    fwupd_bios_setting_get_description;
+    fwupd_bios_setting_get_id;
+    fwupd_bios_setting_get_kind;
+    fwupd_bios_setting_get_lower_bound;
+    fwupd_bios_setting_get_name;
+    fwupd_bios_setting_get_path;
+    fwupd_bios_setting_get_possible_values;
+    fwupd_bios_setting_get_read_only;
+    fwupd_bios_setting_get_scalar_increment;
+    fwupd_bios_setting_get_type;
+    fwupd_bios_setting_get_upper_bound;
+    fwupd_bios_setting_has_possible_value;
+    fwupd_bios_setting_map_possible_value;
+    fwupd_bios_setting_new;
+    fwupd_bios_setting_set_current_value;
+    fwupd_bios_setting_set_description;
+    fwupd_bios_setting_set_id;
+    fwupd_bios_setting_set_kind;
+    fwupd_bios_setting_set_lower_bound;
+    fwupd_bios_setting_set_name;
+    fwupd_bios_setting_set_path;
+    fwupd_bios_setting_set_read_only;
+    fwupd_bios_setting_set_scalar_increment;
+    fwupd_bios_setting_set_upper_bound;
+    fwupd_bios_setting_to_json;
+    fwupd_bios_setting_to_string;
+    fwupd_bios_setting_to_variant;
+    fwupd_client_get_bios_settings;
+    fwupd_client_get_bios_settings_async;
+    fwupd_client_get_bios_settings_finish;
+    fwupd_client_modify_bios_setting;
+    fwupd_client_modify_bios_setting_async;
+    fwupd_client_modify_bios_setting_finish;
+    fwupd_security_attr_get_bios_setting_current_value;
+    fwupd_security_attr_get_bios_setting_id;
+    fwupd_security_attr_get_bios_setting_target_value;
+    fwupd_security_attr_set_bios_setting_current_value;
+    fwupd_security_attr_set_bios_setting_id;
+    fwupd_security_attr_set_bios_setting_target_value;
+  local: *;
+} LIBFWUPD_1.8.3;
+
+LIBFWUPD_1.8.6 {
+  global:
+    fwupd_request_add_flag;
+    fwupd_request_flag_from_string;
+    fwupd_request_flag_to_string;
+    fwupd_request_get_flags;
+    fwupd_request_has_flag;
+    fwupd_request_remove_flag;
+    fwupd_request_set_flags;
+  local: *;
+} LIBFWUPD_1.8.4;
+
+LIBFWUPD_1.8.7 {
+  global:
+    fwupd_device_has_checksum;
+  local: *;
+} LIBFWUPD_1.8.6;
+
+LIBFWUPD_1.8.8 {
+  global:
+    fwupd_get_os_release_full;
+    fwupd_release_add_report;
+    fwupd_release_get_reports;
+    fwupd_release_incorporate;
+    fwupd_report_add_metadata_item;
+    fwupd_report_from_variant;
+    fwupd_report_get_created;
+    fwupd_report_get_device_name;
+    fwupd_report_get_distro_id;
+    fwupd_report_get_distro_variant;
+    fwupd_report_get_distro_version;
+    fwupd_report_get_metadata;
+    fwupd_report_get_metadata_item;
+    fwupd_report_get_type;
+    fwupd_report_get_vendor;
+    fwupd_report_get_vendor_id;
+    fwupd_report_get_version_old;
+    fwupd_report_new;
+    fwupd_report_set_created;
+    fwupd_report_set_device_name;
+    fwupd_report_set_distro_id;
+    fwupd_report_set_distro_variant;
+    fwupd_report_set_distro_version;
+    fwupd_report_set_vendor;
+    fwupd_report_set_vendor_id;
+    fwupd_report_set_version_old;
+    fwupd_report_to_json;
+    fwupd_report_to_string;
+    fwupd_report_to_variant;
+  local: *;
+} LIBFWUPD_1.8.7;
+
+LIBFWUPD_1.8.11 {
+  global:
+    fwupd_client_emulation_load;
+    fwupd_client_emulation_load_async;
+    fwupd_client_emulation_load_finish;
+    fwupd_client_emulation_save;
+    fwupd_client_emulation_save_async;
+    fwupd_client_emulation_save_finish;
+    fwupd_client_inhibit;
+    fwupd_client_inhibit_async;
+    fwupd_client_inhibit_finish;
+    fwupd_client_quit;
+    fwupd_client_quit_async;
+    fwupd_client_quit_finish;
+    fwupd_client_set_daemon_version;
+    fwupd_client_uninhibit;
+    fwupd_client_uninhibit_async;
+    fwupd_client_uninhibit_finish;
+    fwupd_device_get_percentage;
+    fwupd_device_set_percentage;
+  local: *;
+} LIBFWUPD_1.8.8;

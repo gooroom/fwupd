@@ -9,7 +9,7 @@
 #include "fu-ccgx-hpi-common.h"
 
 const gchar *
-fu_ccgx_pd_resp_to_string (CyPDResp val)
+fu_ccgx_pd_resp_to_string(CyPDResp val)
 {
 	if (val == CY_PD_RESP_NO_RESPONSE)
 		return "resp-no-response";
@@ -97,8 +97,8 @@ fu_ccgx_pd_resp_to_string (CyPDResp val)
 		return "soft-reset-sent";
 	if (val == CY_PD_CABLE_RESET_SENT)
 		return "cable-reset-sent";
-	if (val == CY_PD_SOURCE_DISBALED_STATE_ENTERED)
-		return "source-disbaled-state-entered";
+	if (val == CY_PD_SOURCE_DISABLED_STATE_ENTERED)
+		return "source-disabled-state-entered";
 	if (val == CY_PD_SENDER_RESPONSE_TIMER_TIMEOUT)
 		return "sender-response-timer-timeout";
 	if (val == CY_PD_NO_VDM_RESPONSE_RECEIVED)

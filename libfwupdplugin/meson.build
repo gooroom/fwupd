@@ -1,55 +1,169 @@
+if get_option('tests')
+subdir('tests')
+endif
+
+fwupdplugin_version_h = configure_file(
+  input: 'fu-version.h.in',
+  output: 'fu-version.h',
+  configuration: conf
+)
+
 fwupdplugin_src = [
+  'fu-acpi-table.c',        # fuzzing
   'fu-archive.c',
+  'fu-backend.c',
   'fu-bluez-device.c',
   'fu-cabinet.c',
   'fu-chunk.c',             # fuzzing
   'fu-common.c',            # fuzzing
-  'fu-common-cab.c',
+  'fu-sum.c',               # fuzzing
+  'fu-crc.c',               # fuzzing
+  'fu-mem.c',               # fuzzing
+  'fu-byte-array.c',        # fuzzing
+  'fu-string.c',            # fuzzing
+  'fu-bytes.c',             # fuzzing
+  'fu-kernel.c',            # fuzzing
+  'fu-dump.c',              # fuzzing
+  'fu-path.c',              # fuzzing
   'fu-common-guid.c',
-  'fu-common-version.c',    # fuzzing
+  'fu-version-common.c',    # fuzzing
+  'fu-context.c',           # fuzzing
   'fu-device-locker.c',     # fuzzing
   'fu-device.c',            # fuzzing
+  'fu-device-progress.c',
   'fu-dfu-firmware.c',      # fuzzing
+  'fu-fdt-firmware.c',      # fuzzing
+  'fu-fdt-image.c',         # fuzzing
+  'fu-fit-firmware.c',      # fuzzing
+  'fu-ifwi-cpd-firmware.c', # fuzzing
+  'fu-ifwi-fpt-firmware.c', # fuzzing
+  'fu-oprom-firmware.c',    # fuzzing
+  'fu-intel-thunderbolt-nvm.c',         # fuzzing
+  'fu-intel-thunderbolt-firmware.c', # fuzzing
+  'fu-cfu-common.c',        # fuzzing
+  'fu-cfu-offer.c',         # fuzzing
+  'fu-cfu-payload.c',       # fuzzing
   'fu-volume.c',            # fuzzing
   'fu-firmware.c',          # fuzzing
+  'fu-bios-settings.c',        # fuzzing
   'fu-firmware-common.c',   # fuzzing
-  'fu-firmware-image.c',    # fuzzing
   'fu-dfuse-firmware.c',    # fuzzing
   'fu-fmap-firmware.c',     # fuzzing
-  'fu-hwids.c',
+  'fu-hwids.c',             # fuzzing
+  'fu-hwids-config.c',      # fuzzing
+  'fu-hwids-dmi.c',         # fuzzing
+  'fu-hwids-fdt.c',         # fuzzing
+  'fu-hwids-kenv.c',        # fuzzing
+  'fu-hwids-smbios.c',      # fuzzing
   'fu-ihex-firmware.c',     # fuzzing
   'fu-io-channel.c',        # fuzzing
   'fu-plugin.c',
   'fu-quirks.c',            # fuzzing
+  'fu-progress.c',          # fuzzing
+  'fu-security-attr.c',     # fuzzing
   'fu-security-attrs.c',
-  'fu-smbios.c',
+  'fu-smbios.c',            # fuzzing
   'fu-srec-firmware.c',     # fuzzing
+  'fu-archive-firmware.c',
+  'fu-kenv.c',              # fuzzing
   'fu-efi-signature.c',
   'fu-efi-signature-list.c',
+  'fu-efi-common.c',              # fuzzing
+  'fu-efi-firmware-common.c',     # fuzzing
+  'fu-efi-firmware-file.c',       # fuzzing
+  'fu-efi-firmware-filesystem.c', # fuzzing
+  'fu-efi-firmware-section.c',    # fuzzing
+  'fu-efi-firmware-volume.c',     # fuzzing
+  'fu-ifd-bios.c',                # fuzzing
+  'fu-ifd-common.c',              # fuzzing
+  'fu-ifd-firmware.c',            # fuzzing
+  'fu-ifd-image.c',               # fuzzing
+  'fu-uswid-firmware.c',          # fuzzing
+  'fu-coswid-common.c',           # fuzzing
+  'fu-coswid-firmware.c',         # fuzzing
+  'fu-pefile-firmware.c',         # fuzzing
   'fu-efivar.c',
   'fu-udev-device.c',
+  'fu-i2c-device.c',
+  'fu-mei-device.c',
   'fu-usb-device.c',
+  'fu-usb-device-ds20.c',         # fuzzing
+  'fu-usb-device-fw-ds20.c',      # fuzzing
+  'fu-usb-device-ms-ds20.c',      # fuzzing
+  'fu-cfi-device.c',
   'fu-hid-device.c',
+  'fu-linear-firmware.c',
+  'fu-version.c',
 ]
 
+if host_machine.system() == 'linux'
+  fwupdplugin_src += 'fu-common-linux.c'    # fuzzing
+  fwupdplugin_src += 'fu-efivar-linux.c'
+elif host_machine.system() == 'freebsd'
+  fwupdplugin_src += 'fu-common-freebsd.c'
+  fwupdplugin_src += 'fu-efivar-freebsd.c'
+elif host_machine.system() == 'windows'
+  fwupdplugin_src += 'fu-common-windows.c'
+  fwupdplugin_src += 'fu-efivar-windows.c'  # fuzzing
+elif host_machine.system() == 'darwin'
+  fwupdplugin_src += 'fu-common-darwin.c'
+  fwupdplugin_src += 'fu-efivar-darwin.c'
+else
+  error('no OS support for @0@'.format(host_machine.system()))
+endif
+
 fwupdplugin_headers = [
+  'fu-acpi-table.h',
   'fu-archive.h',
+  'fu-backend.h',
   'fu-bluez-device.h',
   'fu-cabinet.h',
   'fu-chunk.h',
   'fu-common.h',
-  'fu-common-cab.h',
+  'fu-byte-array.h',
+  'fu-string.h',
+  'fu-sum.h',
+  'fu-crc.h',
+  'fu-mem.h',
+  'fu-dump.h',
+  'fu-path.h',
+  'fu-bytes.h',
+  'fu-kernel.h',
   'fu-common-guid.h',
-  'fu-common-version.h',
-  'fu-deprecated.h',
+  'fu-version-common.h',
+  'fu-context.h',
   'fu-device.h',
   'fu-device-metadata.h',
   'fu-device-locker.h',
   'fu-dfu-firmware.h',
+  'fu-fdt-firmware.h',
+  'fu-fdt-image.h',
+  'fu-fit-firmware.h',
+  'fu-ifwi-cpd-firmware.h',
+  'fu-ifwi-fpt-firmware.h',
+  'fu-oprom-firmware.h',
+  'fu-intel-thunderbolt-firmware.h',
+  'fu-intel-thunderbolt-nvm.h',
+  'fu-cfu-common.h',
+  'fu-cfu-offer.h',
+  'fu-cfu-payload.h',
+  'fu-efi-common.h',
+  'fu-efi-firmware-file.h',
+  'fu-efi-firmware-filesystem.h',
+  'fu-efi-firmware-section.h',
+  'fu-efi-firmware-volume.h',
+  'fu-ifd-bios.h',
+  'fu-ifd-common.h',
+  'fu-ifd-firmware.h',
+  'fu-uswid-firmware.h',
+  'fu-coswid-firmware.h',
+  'fu-pefile-firmware.h',
+  'fu-ifd-image.h',
+  'fu-linear-firmware.h',
   'fu-volume.h',
   'fu-firmware.h',
+  'fu-bios-settings.h',
   'fu-firmware-common.h',
-  'fu-firmware-image.h',
   'fu-fmap-firmware.h',
   'fu-dfuse-firmware.h',
   'fu-hwids.h',
@@ -57,56 +171,60 @@ fwupdplugin_headers = [
   'fu-io-channel.h',
   'fu-plugin.h',
   'fu-quirks.h',
+  'fu-security-attr.h',
   'fu-security-attrs.h',
+  'fu-progress.h',
   'fu-smbios.h',
+  'fu-cfi-device.h',
   'fu-srec-firmware.h',
+  'fu-archive-firmware.h',
   'fu-efi-signature.h',
   'fu-efi-signature-list.h',
   'fu-efivar.h',
   'fu-udev-device.h',
+  'fu-i2c-device.h',
+  'fu-mei-device.h',
   'fu-usb-device.h',
   'fu-hid-device.h',
 ]
-install_headers(
-  'fwupdplugin.h',
-  subdir : 'fwupd-1',
-)
-install_headers([fwupdplugin_headers, 'fu-plugin-vfuncs.h'],
-  subdir : 'fwupd-1/libfwupdplugin',
-)
-
-fu_hash = custom_target(
-  'fu-hash.h',
-  input : fwupdplugin_src,
-  output : 'fu-hash.h',
-  command : [python3.path(),
-             join_paths(meson.current_source_dir(), 'fu-hash.py'),
-             '@OUTPUT@', '@INPUT@']
-)
 
 fwupdplugin_headers_private = [
-  fu_hash,
+  'fu-backend-private.h',
+  'fu-context-private.h',
   'fu-device-private.h',
+  'fu-device-progress.h',
+  'fu-kenv.h',
   'fu-plugin-private.h',
+  'fu-bios-settings-private.h',
   'fu-security-attrs-private.h',
   'fu-smbios-private.h',
+  'fu-udev-device-private.h',
+  'fu-usb-device-ds20.h',
+  'fu-usb-device-fw-ds20.h',
+  'fu-usb-device-ms-ds20.h',
   'fu-usb-device-private.h',
+  fwupdplugin_version_h,
 ]
 
 introspection_deps = [
   libxmlb,
   libjcat,
   giounix,
+  gusb,
+  gudev,
 ]
 
-if get_option('gusb')
-  introspection_deps += gusb
-endif
-
-if get_option('gudev')
-  fwupdplugin_headers_private += 'fu-udev-device-private.h'
-  introspection_deps += gudev
-endif
+pkgg_requires = [ 'gio-2.0',
+                  'gmodule-2.0',
+                  'gobject-2.0',
+                  'fwupd',
+                  'json-glib-1.0',
+                  'libarchive',
+                  'libgcab-1.0',
+                  'xmlb',
+                  'jcat',
+                  'gusb'
+]
 
 library_deps = [
   introspection_deps,
@@ -115,99 +233,84 @@ library_deps = [
   libgcab,
   valgrind,
   libjcat,
+  lzma,
+  libarchive,
+  cbor,
   platform_deps,
 ]
-
-if get_option('libarchive')
-  library_deps += libarchive
-endif
 
 fwupdplugin_mapfile = 'fwupdplugin.map'
 vflag = '-Wl,--version-script,@0@/@1@'.format(meson.current_source_dir(), fwupdplugin_mapfile)
 fwupdplugin = library(
   'fwupdplugin',
-  sources : [
+  sources: [
     fwupdplugin_src,
-    fwupdplugin_headers
+    fwupdplugin_headers,
+    fwupdplugin_headers_private,
   ],
-  soversion : libfwupdplugin_lt_current,
-  version : libfwupdplugin_lt_version,
-  include_directories : [
+  include_directories: [
     root_incdir,
     fwupd_incdir,
   ],
-  dependencies : [
+  dependencies: [
     library_deps
   ],
-  link_with : [
+  link_with: [
     fwupd,
   ],
-  link_args : vflag,
-  link_depends : fwupdplugin_mapfile,
-  install : true
+  link_args: cc.get_supported_link_arguments([vflag]),
+  link_depends: fwupdplugin_mapfile,
+  install_dir: libdir_pkg,
+  install: true
 )
 
-fwupdplugin_pkgg = import('pkgconfig')
-fwupdplugin_pkgg.generate(
-  libraries : fwupdplugin,
-  requires : [ 'gio-2.0',
-               'gmodule-2.0',
-               'gobject-2.0',
-               'gusb',
-               'fwupd',
-               'json-glib-1.0',
-               'libarchive',
-               'libgcab-1.0',
-               'xmlb',
-               'jcat',
-  ],
-  subdirs : 'fwupd-1',
-  version : meson.project_version(),
-  name : 'fwupdplugin',
-  filebase : 'fwupdplugin',
-  description : 'library for plugins to use to interact with fwupd daemon',
-)
-
-if get_option('introspection') and get_option('gusb')
+if introspection.allowed()
   gir_dep = declare_dependency(sources: fwupd_gir)
-  if gusb.type_name() == 'internal'
-    libgusb_girtarget = subproject('gusb').get_variable('libgusb_girtarget')[0]
-  else
-    libgusb_girtarget = 'GUsb-1.0'
+  girtargets = []
+  extra_args = []
+  if gusb.found()
+    if gusb.type_name() == 'internal'
+      girtargets += subproject('gusb').get_variable('libgusb_girtarget')[0]
+    else
+      girtargets += 'GUsb-1.0'
+    endif
+    extra_args += '-DHAVE_GUSB'
+  endif
+  if libxmlb.type_name() == 'internal'
+    girtargets += subproject('libxmlb').get_variable('gir')[0]
+  elif libxmlb.version().version_compare ('>= 0.3.2')
+    girtargets += 'Xmlb-2.0'
   endif
   fwupdplugin_gir = gnome.generate_gir(fwupd,
-    sources : [
+    sources: [
       fwupdplugin_src,
       fwupdplugin_headers,
       fwupdplugin_headers_private,
     ],
-    nsversion : '1.0',
-    namespace : 'FwupdPlugin',
-    symbol_prefix : 'fu',
-    identifier_prefix : 'Fu',
-    export_packages : 'fu',
-    include_directories : [
+    nsversion: '1.0',
+    namespace: 'FwupdPlugin',
+    symbol_prefix: 'fu',
+    identifier_prefix: 'Fu',
+    export_packages: 'fwupdplugin',
+    extra_args: extra_args,
+    include_directories: [
       fwupd_incdir,
     ],
-    dependencies : [
+    header: 'fwupdplugin.h',
+    dependencies: [
       gir_dep,
       introspection_deps
     ],
-    link_with : [
+    link_with: [
       fwupdplugin,
     ],
-    includes : [
+    includes: [
       'Gio-2.0',
       'GObject-2.0',
-      libgusb_girtarget,
+      girtargets,
       fwupd_gir[0],
     ],
-    install : true
-  )
-  gnome.generate_vapi('fwupdplugin',
-    sources : fwupd_gir[0],
-    packages : ['gio-2.0'],
-    install : true,
+    install: false
   )
 
   # Verify the map file is correct -- note we can't actually use the generated
@@ -222,60 +325,69 @@ if get_option('introspection') and get_option('gusb')
     input: fwupdplugin_gir[0],
     output: 'fwupdplugin.map',
     command: [
-      join_paths(meson.source_root(), 'contrib', 'generate-version-script.py'),
+      python3,
+      join_paths(meson.project_source_root(), 'contrib', 'generate-version-script.py'),
       'LIBFWUPDPLUGIN',
       '@INPUT@',
       '@OUTPUT@',
       '--override', 'fu_chunk_get_type', '1.5.6',
+      '--override', 'fu_srec_firmware_record_get_type', '1.6.1',
     ],
   )
 
   test('fwupdplugin-exported-api', diffcmd,
-       args : [
+       args: [
         '-urNp',
-        join_paths(meson.current_source_dir(), 'fwupdplugin.map'),
+        files('fwupdplugin.map'),
         fwupdplugin_mapfile_target,
         ],
       )
 endif
 
 if get_option('tests')
-  test_deps = [
-    colorhug_test_firmware,
-    builder_test_firmware,
-    hwid_test_firmware,
-    multiple_rels_test_firmware,
-    noreqs_test_firmware,
-    fu_hash,
-  ]
-  testdatadir_src = join_paths(meson.source_root(), 'data', 'tests')
-  testdatadir_dst = join_paths(meson.build_root(), 'data', 'tests')
-  pluginbuilddir = join_paths(meson.build_root(), 'plugins', 'test')
+  env = environment()
+  env.set('G_TEST_SRCDIR', meson.current_source_dir())
+  env.set('G_TEST_BUILDDIR', meson.current_build_dir())
   e = executable(
     'fwupdplugin-self-test',
-    test_deps,
-    sources : [
-      fwupdplugin_src,
+    installed_firmware_zip,
+    sources: [
       'fu-self-test.c'
     ],
-    include_directories : [
+    include_directories: [
       root_incdir,
       fwupd_incdir,
     ],
-    dependencies : [
+    dependencies: [
       library_deps
     ],
-    link_with : [
+    link_with: [
       fwupd,
       fwupdplugin
     ],
-    c_args : [
-      '-DTESTDATADIR_SRC="' + testdatadir_src + '"',
-      '-DTESTDATADIR_DST="' + testdatadir_dst + '"',
-      '-DPLUGINBUILDDIR="' + pluginbuilddir + '"',
+    c_args: [
     ],
   )
-  test('fwupdplugin-self-test', e, is_parallel:false, timeout:180)
+  test('fwupdplugin-self-test', e, is_parallel: false, timeout: 180, env: env)
+
+  install_data([
+      'tests/chassis_type',
+      'tests/sys_vendor',
+    ],
+    install_dir: installed_test_datadir,
+  )
+  install_data([
+      'tests/dmi/tables/DMI',
+      'tests/dmi/tables/smbios_entry_point',
+    ],
+    install_dir: join_paths(installed_test_datadir, 'tests/dmi/tables'),
+  )
+  install_data([
+      'tests/dmi/tables64/DMI',
+      'tests/dmi/tables64/smbios_entry_point',
+    ],
+    install_dir: join_paths(installed_test_datadir, 'tests/dmi/tables64'),
+  )
 endif
 
 fwupdplugin_incdir = include_directories('.')

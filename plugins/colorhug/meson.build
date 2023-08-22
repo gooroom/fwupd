@@ -1,33 +1,16 @@
-if get_option('gusb')
+if gusb.found()
 cargs = ['-DG_LOG_DOMAIN="FuPluginColorHug"']
 
-install_data([
-  'colorhug.quirk',
-  ],
-  install_dir: join_paths(datadir, 'fwupd', 'quirks.d')
-)
-
-shared_module('fu_plugin_colorhug',
-  fu_hash,
-  sources : [
+plugin_quirks += files('colorhug.quirk')
+plugin_builtins += static_library('fu_plugin_colorhug',
+  sources: [
     'fu-colorhug-common.c',
     'fu-colorhug-device.c',
-    'fu-plugin-colorhug.c',
+    'fu-colorhug-plugin.c',
   ],
-  include_directories : [
-    root_incdir,
-    fwupd_incdir,
-    fwupdplugin_incdir,
-  ],
-  install : true,
-  install_dir: plugin_dir,
-  link_with : [
-    fwupd,
-    fwupdplugin,
-  ],
-  c_args : cargs,
-  dependencies : [
-    plugin_deps,
-  ],
+  include_directories: plugin_incdirs,
+  link_with: plugin_libs,
+  c_args: cargs,
+  dependencies: plugin_deps,
 )
 endif

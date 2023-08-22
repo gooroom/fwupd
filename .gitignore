@@ -2,6 +2,7 @@
 /build-win32
 /dist
 /.vscode
+.vscode-ctags
 /build-dir
 /.flatpak-builder
 /repo
@@ -21,15 +22,16 @@
 /*.dsc
 /*.xz
 /*.gz
+/venv
 __pycache__
 plugins/acpi-dmar/tests/
 plugins/acpi-facp/tests/
 plugins/ata/tests/
 plugins/dfu/tests/
 plugins/nvme/tests/
-plugins/synaptics-mst/tests/
 plugins/synaptics-prometheus/tests/
 plugins/tpm-eventlog/tests/
 plugins/uefi-dbx/tests/
 .buildconfig
 .ossfuzz
+*.rej

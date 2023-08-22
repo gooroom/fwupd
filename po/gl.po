@@ -15,7 +15,7 @@ msgstr ""
 "Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. more than a minute
+#. TRANSLATORS: more than a minute
 #, c-format
 msgid "%.0f minute remaining"
 msgid_plural "%.0f minutes remaining"
@@ -140,6 +140,7 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. TRANSLATORS: this is when a device ctrl+c's a watch
+#. TRANSLATORS: this is from ctrl+c
 msgid "Cancelled"
 msgstr "Cancelado"
 
@@ -150,22 +151,6 @@ msgstr "Non foi posíbel aplicar as actualizacións no soporte multimedia"
 #. TRANSLATORS: this is when the daemon state changes
 msgid "Changed"
 msgstr "Cambiado"
-
-#. TRANSLATORS: get interactive prompt
-msgid "Choose a device:"
-msgstr "Seleccione un dispositivo:"
-
-#. TRANSLATORS: get interactive prompt
-msgid "Choose a firmware type:"
-msgstr "Escolla o tipo de firmware:"
-
-#. TRANSLATORS: get interactive prompt
-msgid "Choose a release:"
-msgstr "Escolla a publicación:"
-
-#. TRANSLATORS: get interactive prompt
-msgid "Choose a volume:"
-msgstr "Escolla un volume:"
 
 #. TRANSLATORS: error message
 msgid "Command not found"
@@ -219,10 +204,6 @@ msgstr "Desactivar a depuración de fwupdate"
 msgid "Display version"
 msgstr "Mostrar versión"
 
-#. TRANSLATORS: command line option
-msgid "Do not check for reboot after update"
-msgstr "Non marcar para reiniciar despois de actualizar"
-
 #. TRANSLATORS: turn on all debugging
 msgid "Do not include log domain prefix"
 msgstr "Non incluír o dominio do rexistro"
@@ -234,11 +215,6 @@ msgstr "Non incluír o prefixo de marca de tempo"
 #. TRANSLATORS: command line option
 msgid "Do not perform device safety checks"
 msgstr "Non levar a cabo comprobacións de dispositivo"
-
-msgid "Do not upload report at this time, but prompt again for future updates"
-msgid_plural "Do not upload reports at this time, but prompt again for future updates"
-msgstr[0] "Non subir reporte esta vez, pero preguntar de novo en futuras actualizacións"
-msgstr[1] "Non subir reportes esta vez, pero preguntar de novo en futuras actualizacións"
 
 #. TRANSLATORS: success
 #. success
@@ -310,7 +286,7 @@ msgid "Exit after the engine has loaded"
 msgstr "Saír despois de que se cargue o motor"
 
 #. TRANSLATORS: Suffix: the fallback HSI result
-#. TRANSLATORS: The update state of the specific device
+#. TRANSLATORS: the update state of the specific device
 msgid "Failed"
 msgstr "Fallido"
 
@@ -319,6 +295,7 @@ msgid "Failed to apply update"
 msgstr "Produciuse un fallo ao aplicar a actualización"
 
 #. TRANSLATORS: we could not talk to the fwupd daemon
+#. TRANSLATORS: could not contact the fwupd service over D-Bus
 msgid "Failed to connect to daemon"
 msgstr "Produciuse un fallo ao conectarse ao demoni"
 
@@ -372,10 +349,6 @@ msgstr "Produciuse un fallo ao validar os contidos do ESP"
 msgid "Filename required"
 msgstr "Requírese un nome de ficheiro"
 
-#. TRANSLATORS: program name
-msgid "Firmware Agent"
-msgstr "Axente do firmware"
-
 #. TRANSLATORS: program summary
 msgid "Firmware Update D-Bus Service"
 msgstr "Servizo D-Bus da Actualización do Firmware"
@@ -410,10 +383,6 @@ msgid "Get all device flags supported by fwupd"
 msgstr "Obter todas as bandeiras de dispositivos admitidos por fwupd"
 
 #. TRANSLATORS: command description
-msgid "Get all devices and possible releases"
-msgstr "Obter todos os dispositivos e publicacións posíbeis"
-
-#. TRANSLATORS: command description
 msgid "Get all devices that support firmware updates"
 msgstr "Obtén todos os dispositivos que admiten actualizacións de firmware"
 
@@ -442,7 +411,7 @@ msgid "Host Security ID:"
 msgstr "ID de seguranza do equipo:"
 
 #. TRANSLATORS: Title:
-#. https://en.wikipedia.org/wiki/Input%E2%80%93output_memory_management_unit
+#. * https://en.wikipedia.org/wiki/Input%E2%80%93output_memory_management_unit
 msgid "IOMMU"
 msgstr "IOMMU"
 
@@ -457,9 +426,6 @@ msgstr "Instalar un blob de firmware nun dispositivo"
 #. TRANSLATORS: command description
 msgid "Install a firmware file on this hardware"
 msgstr "Instalar un ficheiro de firmware neste hardware"
-
-msgid "Install old version of system firmware"
-msgstr "Instalar unha versión antiga do firmware do sistema"
 
 msgid "Install signed device firmware"
 msgstr "Instalar firmware de dispositivo asinado"
@@ -514,11 +480,6 @@ msgstr "Intel CET activo"
 #. * enabled means supported by the processor
 msgid "Intel CET Enabled"
 msgstr "Intel CET activado"
-
-#. TRANSLATORS: Title: Direct Connect Interface (DCI) allows
-#. * debugging of Intel processors using the USB3 port
-msgid "Intel DCI debugger"
-msgstr "Depurador de Intel DCI"
 
 #. TRANSLATORS: Title: SMAP = Supervisor Mode Access Prevention
 msgid "Intel SMAP"
@@ -642,10 +603,6 @@ msgstr "Mostrar só un valor de PCR"
 msgid "Override the default ESP path"
 msgstr "Sobrescribir a ruta predefinida do ESP"
 
-#. TRANSLATORS: command line option
-msgid "Override warnings and force the action"
-msgstr "Omitir avisos e forzar a acción"
-
 #. TRANSLATORS: command description
 msgid "Parse and show details about a firmware file"
 msgstr "Analixar e mostrar a información dun ficheiro de firmware"
@@ -723,11 +680,11 @@ msgstr "Reinstalando %s con %s... "
 msgid "Replace data in an existing firmware file"
 msgstr "Substituír datos nun ficheiro de firmware existente"
 
-#. TRANSLATORS: metadata is downloaded from the Internet
+#. TRANSLATORS: metadata is downloaded
 msgid "Requires internet connection"
 msgstr "Require conexión a internet"
 
-#. TRANSLATORS: configuration changes only take effect on restart
+#. TRANSLATORS: changes only take effect on restart
 msgid "Restart the daemon to make the change effective?"
 msgstr "Desexa reiniciar o demonio para facer o cambio efectivo?"
 
@@ -755,7 +712,7 @@ msgstr "Escritura do SPI"
 msgid "Scheduling…"
 msgstr "Planificando…"
 
-#. TRANSLATORS: Device has been chosen by the daemon for the user
+#. TRANSLATORS: device has been chosen by the daemon for the user
 msgid "Selected device"
 msgstr "Seleccionar un dispositivo"
 
@@ -810,6 +767,7 @@ msgstr "Mostrar a información de estado da actualización do firmware"
 msgid "Sign data using the client certificate"
 msgstr "Asinar os datos usando o certificafo do cliente"
 
+#. TRANSLATORS: command description
 msgctxt "command-description"
 msgid "Sign data using the client certificate"
 msgstr "Asinar os datos usando o certificafo do cliente"
@@ -915,11 +873,7 @@ msgstr "Desbloqueado"
 msgid "Unset the debugging flag during update"
 msgstr "Quitar a bandeira de depuración durante a actualización"
 
-#. TRANSLATORS: command description
-msgid "Update all devices that match local metadata"
-msgstr "Actualizar todos os dispositivos que coincidan os metadatos locais"
-
-#. TRANSLATORS: ask the user if we can update the metadata
+#. TRANSLATORS: ask if we can update metadata
 msgid "Update now?"
 msgstr "Actualizar agora"
 
@@ -949,7 +903,7 @@ msgstr "Actualizando %s…"
 msgid "Upload report now?"
 msgstr "Desexa subir o informe agora?"
 
-#. TRANSLATORS: error message explaining command to run to how to get help
+#. TRANSLATORS: explain how to get help
 msgid "Use fwupdtool --help for help"
 msgstr "Usar fwupdtool --help para obter axuda"
 

@@ -1,31 +1,23 @@
-if get_option('gusb')
+if gusb.found()
 cargs = ['-DG_LOG_DOMAIN="FuPluginDfuCsr"']
 
-install_data(['dfu-csr.quirk'],
-  install_dir: join_paths(datadir, 'fwupd', 'quirks.d')
-)
-
-shared_module('fu_plugin_dfu_csr',
-  fu_hash,
-  sources : [
+plugin_quirks += files('dfu-csr.quirk')
+plugin_builtins += static_library('fu_plugin_dfu_csr',
+  sources: [
     'fu-dfu-csr-device.c',
-    'fu-plugin-dfu-csr.c',
+    'fu-dfu-csr-plugin.c',
   ],
-  include_directories : [
+  include_directories: [
     root_incdir,
     fwupd_incdir,
     fwupdplugin_incdir,
     plugindfu_incdir,
   ],
-  install : true,
-  install_dir: plugin_dir,
-  c_args : cargs,
-  dependencies : [
-    plugin_deps,
-  ],
-  link_with : [
+  c_args: cargs,
+  dependencies: plugin_deps,
+  link_with: [
     fwupdplugin,
-    dfu,
+    plugin_builtin_dfu,
   ],
 )
 endif

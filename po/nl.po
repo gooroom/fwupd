@@ -49,6 +49,7 @@ msgid "Authentication is required to update the stored checksums for the device"
 msgstr "Om de opgeslagen controlesommen op het apparaat bij te werken moet u toestemming verlenen"
 
 #. TRANSLATORS: this is when a device ctrl+c's a watch
+#. TRANSLATORS: this is from ctrl+c
 msgid "Cancelled"
 msgstr "Geannuleerd"
 
@@ -157,9 +158,6 @@ msgstr "Slaapt..."
 msgid "Install a firmware file on this hardware"
 msgstr "Een firmware-bestand op deze hardware installeren"
 
-msgid "Install old version of system firmware"
-msgstr "Oude versie van systeemfirmware installeren"
-
 msgid "Install signed device firmware"
 msgstr "Ondertekende apparaatfirmware installeren"
 
@@ -246,10 +244,6 @@ msgstr "Ontgrendelt het apparaat voor firmware-toegang"
 
 msgid "Update the stored device verification information"
 msgstr "Opgeslagen apparaatverificatie-informatie bijwerken"
-
-#. TRANSLATORS: command description
-msgid "Updates all firmware to latest versions available"
-msgstr "Werkt alle firmware bij naar de nieuwste versies die beschikbaar zijn"
 
 #. TRANSLATORS: the first replacement is a display name
 #. * e.g. "ColorHugALS" and the second and third are

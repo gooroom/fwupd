@@ -1,29 +1,22 @@
-if get_option('gusb')
+if gusb.found()
 cargs = ['-DG_LOG_DOMAIN="FuPluginSteelSeries"']
 
-install_data(['steelseries.quirk'],
-  install_dir: join_paths(datadir, 'fwupd', 'quirks.d')
-)
-
-shared_module('fu_plugin_steelseries',
-  fu_hash,
-  sources : [
-    'fu-plugin-steelseries.c',
+plugin_quirks += files('steelseries.quirk')
+plugin_builtins += static_library('fu_plugin_steelseries',
+  sources: [
+    'fu-steelseries-plugin.c',
     'fu-steelseries-device.c',
+    'fu-steelseries-firmware.c',
+    'fu-steelseries-fizz-hid.c',
+    'fu-steelseries-fizz-tunnel.c',
+    'fu-steelseries-fizz.c',
+    'fu-steelseries-mouse.c',
+    'fu-steelseries-gamepad.c',
+    'fu-steelseries-sonic.c',
   ],
-  include_directories : [
-    root_incdir,
-    fwupd_incdir,
-    fwupdplugin_incdir,
-  ],
-  install : true,
-  install_dir: plugin_dir,
-  link_with : [
-    fwupdplugin,
-  ],
-  c_args : cargs,
-  dependencies : [
-    plugin_deps,
-  ],
+  include_directories: plugin_incdirs,
+  link_with: plugin_libs,
+  c_args: cargs,
+  dependencies: plugin_deps,
 )
 endif

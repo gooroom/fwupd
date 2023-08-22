@@ -26,10 +26,18 @@ class Builder:
             "OUT", os.path.realpath(os.path.join(DEFAULT_BUILDDIR, "out"))
         )
         self.srcdir = self._ensure_environ("SRC", os.path.realpath(".."))
-        self.ldflags = ["-lpthread", "-lresolv", "-ldl", "-lffi", "-lz"]
+        self.ldflags = [
+            "-lpthread",
+            "-lresolv",
+            "-ldl",
+            "-lffi",
+            "-lz",
+            "-llzma",
+            "-lzstd",
+        ]
 
         # defined in env
-        self.cflags = ["-Wno-deprecated-declarations"]
+        self.cflags = ["-Wno-deprecated-declarations", "-g"]
         if "CFLAGS" in os.environ:
             self.cflags += os.environ["CFLAGS"].split(" ")
         self.cxxflags = []
@@ -51,13 +59,13 @@ class Builder:
         os.makedirs(self.installdir, exist_ok=True)
 
     def _ensure_environ(self, key: str, value: str) -> str:
-        """ set the environment unless already set """
+        """set the environment unless already set"""
         if key not in os.environ:
             os.environ[key] = value
         return os.environ[key]
 
     def checkout_source(self, name: str, url: str, commit: Optional[str] = None) -> str:
-        """ checkout source tree, optionally to a specific commit """
+        """checkout source tree, optionally to a specific commit"""
         srcdir_name = os.path.join(self.srcdir, name)
         if os.path.exists(srcdir_name):
             return srcdir_name
@@ -67,7 +75,7 @@ class Builder:
         return srcdir_name
 
     def build_meson_project(self, srcdir: str, argv) -> None:
-        """ configure and build the meson project """
+        """configure and build the meson project"""
         srcdir_build = os.path.join(srcdir, DEFAULT_BUILDDIR)
         if not os.path.exists(srcdir_build):
             subprocess.run(
@@ -87,20 +95,40 @@ class Builder:
             )
             subprocess.run(["ninja", "install"], cwd=srcdir_build, check=True)
 
+    def build_cmake_project(self, srcdir: str, argv=None) -> None:
+        """configure and build the meson project"""
+        if not argv:
+            argv = []
+        srcdir_build = os.path.join(srcdir, DEFAULT_BUILDDIR)
+        if not os.path.exists(srcdir_build):
+            os.makedirs(srcdir_build, exist_ok=True)
+            subprocess.run(
+                [
+                    "cmake",
+                    "-DCMAKE_INSTALL_PREFIX:PATH={}".format(self.builddir),
+                    "-DCMAKE_INSTALL_LIBDIR={}".format("lib"),
+                ]
+                + argv
+                + [".."],
+                cwd=srcdir_build,
+                check=True,
+            )
+            subprocess.run(["make", "all", "install"], cwd=srcdir_build, check=True)
+
     def add_work_includedir(self, value: str) -> None:
-        """ add a CFLAG """
+        """add a CFLAG"""
         self.cflags.append("-I{}/{}".format(self.builddir, value))
 
     def add_src_includedir(self, value: str) -> None:
-        """ add a CFLAG """
+        """add a CFLAG"""
         self.cflags.append("-I{}/{}".format(self.srcdir, value))
 
     def add_build_ldflag(self, value: str) -> None:
-        """ add a LDFLAG """
+        """add a LDFLAG"""
         self.ldflags.append(os.path.join(self.builddir, value))
 
     def substitute(self, src: str, replacements: Dict[str, str]) -> str:
-        """ map changes """
+        """map changes"""
 
         dst = os.path.basename(src).replace(".in", "")
         with open(os.path.join(self.srcdir, src), "r") as f:
@@ -112,21 +140,14 @@ class Builder:
         return dst
 
     def compile(self, src: str) -> str:
-        """ compile a specific source file """
+        """compile a specific source file"""
         argv = [self.cc]
         argv.extend(self.cflags)
         fullsrc = os.path.join(self.srcdir, src)
         if not os.path.exists(fullsrc):
             fullsrc = os.path.join(self.builddir, src)
         dst = os.path.basename(src).replace(".c", ".o")
-        argv.extend(
-            [
-                "-c",
-                fullsrc,
-                "-o",
-                os.path.join(self.builddir, dst),
-            ]
-        )
+        argv.extend(["-c", fullsrc, "-o", os.path.join(self.builddir, dst)])
         print("building {} into {}".format(src, dst))
         try:
             subprocess.run(argv, cwd=self.srcdir, check=True)
@@ -136,7 +157,7 @@ class Builder:
         return os.path.join(self.builddir, "{}".format(dst))
 
     def link(self, objs: List[str], dst: str) -> None:
-        """ link multiple obects into a binary """
+        """link multiple objects into a binary"""
         argv = [self.cxx] + self.cxxflags
         for obj in objs:
             if obj.startswith("-"):
@@ -148,10 +169,33 @@ class Builder:
         print("building {} into {}".format(",".join(objs), dst))
         subprocess.run(argv, cwd=self.srcdir, check=True)
 
+    def mkfuzztargets(self, globstr: str) -> None:
+        """make binary fuzzing targets from builder.xml files"""
+        builder_xmls = glob.glob(globstr)
+        if not builder_xmls:
+            print("failed to find {}".format(globstr))
+            sys.exit(1)
+        for fn_src in builder_xmls:
+            fn_dst = fn_src.replace(".builder.xml", ".bin")
+            if os.path.exists(fn_dst):
+                continue
+            print("building {} into {}".format(fn_src, fn_dst))
+            try:
+                argv = [
+                    "build/src/fwupdtool",
+                    "firmware-build",
+                    fn_src,
+                    fn_dst,
+                ]
+                subprocess.run(argv, check=True)
+            except subprocess.CalledProcessError as e:
+                print("tried to run: `{}` and got {}".format(" ".join(argv), str(e)))
+                sys.exit(1)
+
     def write_header(
         self, dst: str, defines: Dict[str, Optional[Union[str, int]]]
     ) -> None:
-        """ write a header file """
+        """write a header file"""
         dstdir = os.path.join(self.builddir, os.path.dirname(dst))
         os.makedirs(dstdir, exist_ok=True)
         print("writing {}".format(dst))
@@ -168,39 +212,69 @@ class Builder:
         self.add_work_includedir(os.path.dirname(dst))
 
     def makezip(self, dst: str, globstr: str) -> None:
-        """ create a zip file archive from a glob """
-        argv = [
-            "zip",
-            "--junk-paths",
-            os.path.join(self.installdir, dst),
-        ] + glob.glob(os.path.join(self.srcdir, globstr))
+        """create a zip file archive from a glob"""
+        argv = ["zip", "--junk-paths", os.path.join(self.installdir, dst)] + glob.glob(
+            os.path.join(self.srcdir, globstr)
+        )
         print("assembling {}".format(dst))
         subprocess.run(argv, cwd=self.srcdir, check=True)
 
     def grep_meson(self, src: str, token: str = "fuzzing") -> List[str]:
-        """ find source files tagged with a specific comment """
+        """find source files tagged with a specific comment"""
         srcs = []
         with open(os.path.join(self.srcdir, src, "meson.build"), "r") as f:
             for line in f.read().split("\n"):
                 if line.find(token) == -1:
                     continue
-                srcs.append(
-                    os.path.join(
-                        src,
-                        line.strip()
-                        .replace("'", "")
-                        .replace(",", "")
-                        .replace(" ", "")
-                        .split("#")[0],
-                    )
-                )
+
+                # get rid of token
+                line = line.split("#")[0]
+
+                # get rid of variable
+                try:
+                    line = line.split("=")[1]
+                except IndexError:
+                    pass
+
+                # get rid of whitespace
+                for char in ["'", ",", " "]:
+                    line = line.replace(char, "")
+
+                # all done
+                srcs.append(os.path.join(src, line))
         return srcs
+
+
+class Fuzzer:
+    def __init__(self, name, srcdir=None, globstr=None, pattern=None) -> None:
+
+        self.name = name
+        self.srcdir = srcdir or name
+        self.globstr = globstr or "{}*.bin".format(name)
+        self.pattern = pattern or "{}-firmware".format(name)
+
+    @property
+    def new_gtype(self) -> str:
+        return "fu_{}_new".format(self.pattern).replace("-", "_")
+
+    @property
+    def header(self) -> str:
+        return "fu-{}.h".format(self.pattern)
 
 
 def _build(bld: Builder) -> None:
 
+    # CBOR
+    src = bld.checkout_source(
+        "libcbor", url="https://github.com/PJK/libcbor.git", commit="v0.9.0"
+    )
+    bld.build_cmake_project(src)
+    bld.add_build_ldflag("lib/libcbor.a")
+
     # GLib
-    src = bld.checkout_source("glib", url="https://gitlab.gnome.org/GNOME/glib.git")
+    src = bld.checkout_source(
+        "glib", url="https://gitlab.gnome.org/GNOME/glib.git", commit="glib-2-68"
+    )
     bld.build_meson_project(
         src,
         [
@@ -211,6 +285,7 @@ def _build(bld: Builder) -> None:
             "-Dbsymbolic_functions=false",
             "-Dtests=false",
             "-Dinternal_pcre=true",
+            "--force-fallback-for=libpcre",
         ],
     )
     bld.add_work_includedir("include/glib-2.0")
@@ -223,16 +298,10 @@ def _build(bld: Builder) -> None:
 
     # JSON-GLib
     src = bld.checkout_source(
-        "json-glib",
-        url="https://gitlab.gnome.org/GNOME/json-glib.git",
+        "json-glib", url="https://gitlab.gnome.org/GNOME/json-glib.git"
     )
     bld.build_meson_project(
-        src,
-        [
-            "-Dgtk_doc=disabled",
-            "-Dtests=false",
-            "-Dintrospection=disabled",
-        ],
+        src, ["-Dgtk_doc=disabled", "-Dtests=false", "-Dintrospection=disabled"]
     )
     bld.add_work_includedir("include/json-glib-1.0/json-glib")
     bld.add_work_includedir("include/json-glib-1.0")
@@ -241,12 +310,7 @@ def _build(bld: Builder) -> None:
     # libxmlb
     src = bld.checkout_source("libxmlb", url="https://github.com/hughsie/libxmlb.git")
     bld.build_meson_project(
-        src,
-        [
-            "-Dgtkdoc=false",
-            "-Dintrospection=false",
-            "-Dtests=false",
-        ],
+        src, ["-Dgtkdoc=false", "-Dintrospection=false", "-Dtests=false"]
     )
     bld.add_work_includedir("include/libxmlb-2")
     bld.add_work_includedir("include/libxmlb-2/libxmlb")
@@ -259,11 +323,19 @@ def _build(bld: Builder) -> None:
         {
             "FWUPD_DATADIR": "/tmp",
             "FWUPD_LOCALSTATEDIR": "/tmp",
-            "FWUPD_PLUGINDIR": "/tmp",
+            "FWUPD_LIBDIR_PKG": "/tmp",
             "FWUPD_SYSCONFDIR": "/tmp",
             "HAVE_REALPATH": None,
             "PACKAGE_NAME": "fwupd",
             "PACKAGE_VERSION": "0.0.0",
+        },
+    )
+    bld.write_header(
+        "libfwupdplugin/fu-version.h",
+        {
+            "FU_MAJOR_VERSION": 0,
+            "FU_MINOR_VERSION": 0,
+            "FU_MICRO_VERSION": 0,
         },
     )
 
@@ -282,54 +354,107 @@ def _build(bld: Builder) -> None:
         built_objs.append(bld.compile("fwupd/libfwupdplugin/fu-fuzzer-main.c"))
 
     # built in formats
-    for fuzzer in ["dfuse", "fmap", "ihex", "srec"]:
+    for fzr in [
+        Fuzzer("dfuse"),
+        Fuzzer("fdt"),
+        Fuzzer("fit"),
+        Fuzzer("fmap"),
+        Fuzzer("ihex"),
+        Fuzzer("srec"),
+        Fuzzer("intel-thunderbolt"),
+        Fuzzer("ifwi-cpd"),
+        Fuzzer("ifwi-fpt"),
+        Fuzzer("oprom"),
+        Fuzzer("uswid"),
+        Fuzzer("efi-firmware-filesystem", pattern="efi-firmware-filesystem"),
+        Fuzzer("efi-firmware-volume", pattern="efi-firmware-volume"),
+        Fuzzer("ifd"),
+    ]:
         src = bld.substitute(
             "fwupd/libfwupdplugin/fu-fuzzer-firmware.c.in",
             {
-                "@FIRMWARENEW@": "fu_{}_firmware_new".format(fuzzer),
-                "@INCLUDE@": "libfwupdplugin/fu-{}-firmware.h".format(fuzzer),
+                "@FIRMWARENEW@": fzr.new_gtype,
+                "@INCLUDE@": os.path.join("libfwupdplugin", fzr.header),
             },
         )
-        bld.link([bld.compile(src)] + built_objs, "{}_fuzzer".format(fuzzer))
+        bld.link([bld.compile(src)] + built_objs, "{}_fuzzer".format(fzr.name))
+        bld.mkfuzztargets(
+            os.path.join(
+                bld.srcdir,
+                "fwupd",
+                "libfwupdplugin",
+                "tests",
+                "{}*.builder.xml".format(fzr.name),
+            )
+        )
         bld.makezip(
-            "{}_fuzzer_seed_corpus.zip".format(fuzzer),
-            "fwupd/src/fuzzing/firmware/{}*".format(fuzzer),
+            "{}_fuzzer_seed_corpus.zip".format(fzr.name),
+            "fwupd/libfwupdplugin/tests/{}".format(fzr.globstr),
         )
 
     # plugins
-    for srcdir, fuzzer, globstr in [
-        ("bcm57xx", "bcm57xx", "bcm57xx*"),
-        ("ccgx", "ccgx", "ccgx*.cyacd"),
-        ("ccgx", "ccgx-dmc", "ccgx-dmc*.bin"),
-        ("cros-ec", "cros-ec", "cros-ec*"),
-        ("ebitdo", "ebitdo", "ebitdo*"),
-        ("hailuck", "hailuck-kbd", "ihex*"),
-        ("pixart-rf", "pxi", "pixart*"),
-        ("solokey", "solokey", "solokey*"),
-        ("synaptics-prometheus", "synaprom", "synaprom*"),
-        ("synaptics-rmi", "synaptics-rmi", "synaptics-rmi*"),
-        ("synaptics-mst", "synaptics-mst", "synaptics-mst*"),
-        ("wacom-usb", "wac", "wacom*"),
+    for fzr in [
+        Fuzzer("acpi-phat", pattern="acpi-phat"),
+        Fuzzer("bcm57xx"),
+        Fuzzer("ccgx-dmc", srcdir="ccgx", globstr="ccgx-dmc*.bin"),
+        Fuzzer("ccgx"),
+        Fuzzer("cros-ec"),
+        Fuzzer("ebitdo"),
+        Fuzzer("elanfp"),
+        Fuzzer("elantp"),
+        Fuzzer("genesys-scaler", srcdir="genesys", pattern="genesys-scaler-firmware"),
+        Fuzzer("genesys-usbhub", srcdir="genesys", pattern="genesys-usbhub-firmware"),
+        Fuzzer("pixart", srcdir="pixart-rf", pattern="pxi-firmware"),
+        Fuzzer("redfish-smbios", srcdir="redfish", pattern="redfish-smbios"),
+        Fuzzer("synaptics-prometheus", pattern="synaprom-firmware"),
+        Fuzzer("synaptics-cape"),
+        Fuzzer("synaptics-mst"),
+        Fuzzer("synaptics-rmi"),
+        Fuzzer("uf2"),
+        Fuzzer("wacom-usb", pattern="wac-firmware"),
     ]:
         fuzz_objs = []
-        for obj in bld.grep_meson("fwupd/plugins/{}".format(srcdir)):
+        for obj in bld.grep_meson("fwupd/plugins/{}".format(fzr.srcdir)):
             fuzz_objs.append(bld.compile(obj))
         src = bld.substitute(
             "fwupd/libfwupdplugin/fu-fuzzer-firmware.c.in",
             {
-                "@FIRMWARENEW@": "fu_{}_firmware_new".format(fuzzer.replace("-", "_")),
-                "@INCLUDE@": "plugins/{}/fu-{}-firmware.h".format(srcdir, fuzzer),
+                "@FIRMWARENEW@": fzr.new_gtype,
+                "@INCLUDE@": os.path.join("plugins", fzr.srcdir, fzr.header),
             },
         )
         fuzz_objs.append(bld.compile(src))
-        bld.link(fuzz_objs + built_objs, "{}_fuzzer".format(fuzzer))
+        bld.link(fuzz_objs + built_objs, "{}_fuzzer".format(fzr.name))
+        bld.mkfuzztargets(
+            os.path.join(
+                bld.srcdir,
+                "fwupd",
+                "plugins",
+                fzr.srcdir,
+                "tests",
+                "{}*.builder.xml".format(fzr.name),
+            )
+        )
         bld.makezip(
-            "{}_fuzzer_seed_corpus.zip".format(fuzzer),
-            "fwupd/src/fuzzing/firmware/{}".format(globstr),
+            "{}_fuzzer_seed_corpus.zip".format(fzr.name),
+            "fwupd/plugins/{}/tests/{}".format(fzr.srcdir, fzr.globstr),
         )
 
 
 if __name__ == "__main__":
+
+    # install missing deps here rather than patching the Dockerfile in oss-fuzz
+    try:
+        subprocess.check_call(
+            ["apt-get", "install", "-y", "liblzma-dev", "libzstd-dev", "libcbor-dev"],
+            stdout=open(os.devnull, "wb"),
+        )
+    except FileNotFoundError:
+        pass
+    except subprocess.CalledProcessError as e:
+        print(e.output)
+        sys.exit(1)
+
     _builder = Builder()
     _build(_builder)
     sys.exit(0)

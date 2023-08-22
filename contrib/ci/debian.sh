@@ -2,8 +2,8 @@
 set -e
 set -x
 
-# remove when tpm2-tss is fixed
-mkdir -p /usr/include/tss
+export QUBES_OPTION=
+
 
 #although it's debian, we don't build packages
 if [ "$OS" = "debian-s390x" ]; then
@@ -11,15 +11,20 @@ if [ "$OS" = "debian-s390x" ]; then
 	exit 0
 fi
 
+# Set Qubes Os vars if -Dqubes=true is parameter
+if [ "$QUBES" = "true" ]; then
+	export QUBES_OPTION='-Dqubes=true'
+fi
+
 #prepare
 export DEBFULLNAME="CI Builder"
 export DEBEMAIL="ci@travis-ci.org"
 VERSION=`git describe | sed 's/-/+r/;s/-/+/'`
-[ -z $VERSION ] && VERSION=`head meson.build | grep ' version :' | cut -d \' -f2`
+[ -z $VERSION ] && VERSION=`head meson.build | grep ' version:' | cut -d \' -f2`
 rm -rf build/
 mkdir -p build
 shopt -s extglob
-cp -lR !(build|dist) build/
+cp -lR !(build|dist|venv) build/
 pushd build
 mv contrib/debian .
 sed s/quilt/native/ debian/source/format -i
@@ -29,17 +34,15 @@ sed s/quilt/native/ debian/source/format -i
 #check if we have all deps available
 #if some are missing, we're going to use subproject instead and
 #packaging CI will fail
-./contrib/ci/generate_dependencies.py  | xargs apt install -y || true
+apt update -qq && apt install python3-apt -y
+./contrib/ci/fwupd_setup_helpers.py install-dependencies -o debian --yes || true
 if ! dpkg-checkbuilddeps; then
 	./contrib/ci/ubuntu.sh
 	exit 0
 fi
 
-#clone test firmware
-if [ "$CI_NETWORK" = "true" ]; then
-	./contrib/ci/get_test_firmware.sh
-	export G_TEST_SRCDIR=`pwd`/fwupd-test-firmware/installed-tests
-fi
+#clone test firmware if necessary
+. ./contrib/ci/get_test_firmware.sh
 
 #disable unit tests if fwupd is already installed (may cause problems)
 if [ -x /usr/lib/fwupd/fwupd ]; then
@@ -47,7 +50,8 @@ if [ -x /usr/lib/fwupd/fwupd ]; then
 fi
 #build the package
 EDITOR=/bin/true dch --create --package fwupd -v $VERSION "CI Build"
-debuild --no-lintian --preserve-envvar CI --preserve-envvar CC
+debuild --no-lintian --preserve-envvar CI --preserve-envvar CC \
+	--preserve-envvar QUBES_OPTION
 
 #check lintian output
 #suppress tags that are side effects of building in docker this way
@@ -55,6 +59,7 @@ lintian ../*changes \
 	-IE \
 	--pedantic \
 	--no-tag-display-limit \
+	--suppress-tags library-not-linked-against-libc \
 	--suppress-tags bad-distribution-in-changes-file \
 	--suppress-tags debian-watch-file-in-native-package \
 	--suppress-tags source-nmu-has-incorrect-version-number \
@@ -71,8 +76,12 @@ if [ ! -f /.dockerenv ]; then
 fi
 
 #test the packages install
-PACKAGES=$(ls ../*.deb | grep -v 'fwupd-tests\|dbgsym')
+PACKAGES=$(find .. -type f -name "*.deb" | grep -v 'fwupd-tests\|dbgsym')
 dpkg -i $PACKAGES
+
+# copy in more non-generated data
+mkdir -p /usr/share/installed-tests/fwupd
+cp fwupd-test-firmware/installed-tests/* /usr/share/installed-tests/fwupd/ -LRv
 
 # run the installed tests
 if [ "$CI" = "true" ]; then

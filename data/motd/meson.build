@@ -1,10 +1,10 @@
 
-if get_option('systemd')
+if libsystemd.found()
   install_data(['fwupd-refresh.timer'],
     install_dir: systemdunitdir)
   install_data(['fwupd-refresh.preset'],
     install_dir: systemdsystempresetdir)
-  motd_fullpath = join_paths ('/run', motd_dir, 'fwupd', motd_file)
+  motd_fullpath = join_paths ('/run', motd_dir, motd_file)
 else
   motd_fullpath = join_paths (localstatedir, motd_dir, motd_file)
 endif
@@ -13,11 +13,22 @@ con2 = configuration_data()
 con2.set('bindir', bindir)
 con2.set('motd_fullpath', motd_fullpath)
 
-if get_option('systemd')
+if libsystemd.found()
+  if get_option('systemd_unit_user') == ''
+      con2.set('user', 'DynamicUser=yes')
+  else
+      dynamic_options = [
+                         'ProtectSystem=strict',
+                         'ProtectHome=read-only',
+                         'User=' + get_option('systemd_unit_user')
+                        ]
+      con2.set('user','\n'.join(dynamic_options))
+  endif
+
   configure_file(
-    input : 'fwupd-refresh.service.in',
-    output : 'fwupd-refresh.service',
-    configuration : con2,
+    input: 'fwupd-refresh.service.in',
+    output: 'fwupd-refresh.service',
+    configuration: con2,
     install: true,
     install_dir: systemdunitdir,
   )
@@ -27,8 +38,8 @@ endif
 # of sourcing /run/motd.d/*
 # See https://bugs.launchpad.net/ubuntu/+source/pam/+bug/399071
 configure_file(
-  input : '85-fwupd.motd.in',
-  output : motd_file,
-  configuration : con2,
+  input: '85-fwupd.motd.in',
+  output: motd_file,
+  configuration: con2,
   install: false,
 )

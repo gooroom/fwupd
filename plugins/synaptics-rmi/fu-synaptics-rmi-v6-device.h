@@ -6,9 +6,7 @@
 
 #pragma once
 
-#include <glib-object.h>
-
 #include "fu-synaptics-rmi-device.h"
 
-gboolean	 fu_synaptics_rmi_v6_device_setup		(FuSynapticsRmiDevice	*self,
-								 GError			**error);
+gboolean
+fu_synaptics_rmi_v6_device_setup(FuSynapticsRmiDevice *self, GError **error);

@@ -70,11 +70,8 @@ msgstr "Потребна је пријава за ажурирање фирмв�
 msgid "Authentication is required to update the stored checksums for the device"
 msgstr "Потребна је пријава за ажурирање причуваних сума провере за уређај"
 
-#. TRANSLATORS: command description
-msgid "Build firmware using a sandbox"
-msgstr "Изгради фирмвер унутар кутије"
-
 #. TRANSLATORS: this is when a device ctrl+c's a watch
+#. TRANSLATORS: this is from ctrl+c
 msgid "Cancelled"
 msgstr "Отказао"
 
@@ -85,18 +82,6 @@ msgstr "Променио"
 #. TRANSLATORS: remote checksum
 msgid "Checksum"
 msgstr "Чек-сума"
-
-#. TRANSLATORS: get interactive prompt
-msgid "Choose a device:"
-msgstr "Изаберите уређај:"
-
-#. TRANSLATORS: get interactive prompt
-msgid "Choose a release:"
-msgstr "Изаберите издање:"
-
-#. TRANSLATORS: command description
-msgid "Clears any updates scheduled to be updated offline"
-msgstr "Очисти сва ажурирања заказана за ажурирање ван мреже"
 
 #. TRANSLATORS: command description
 msgid "Clears the results from the last update"
@@ -118,6 +103,7 @@ msgstr "Опције отклањања проблема"
 msgid "Decompressing…"
 msgstr "Распакујем…"
 
+#. TRANSLATORS: description of BIOS setting
 #. TRANSLATORS: multiline description of device
 msgid "Description"
 msgstr "Опис"
@@ -145,10 +131,6 @@ msgstr "Уређаји који нису ажурирани исправно:"
 #. TRANSLATORS: command line option
 msgid "Do not check for old metadata"
 msgstr "Не проверавај старе метаподатке"
-
-#. TRANSLATORS: command line option
-msgid "Do not check for reboot after update"
-msgstr "Не проверавај да ли је потребно поновно покретање након ажурирања"
 
 #. TRANSLATORS: command line option
 msgid "Do not check for unreported history"
@@ -281,9 +263,6 @@ msgstr "Мирујем…"
 msgid "Install a firmware file on this hardware"
 msgstr "Инсталирај датотеку са фирмвером на овај уређај"
 
-msgid "Install old version of system firmware"
-msgstr "Инсталирајте старо издање системског фирмвера"
-
 msgid "Install signed device firmware"
 msgstr "Инсталирајте потписани фирмвер за уређаје"
 
@@ -300,6 +279,7 @@ msgstr "Инсталирајте непотписани системски фи�
 msgid "Installing firmware update…"
 msgstr "Инсталирам ажурирање фирмвера…"
 
+#. TRANSLATORS: keyring type, e.g. GPG or PKCS7
 msgid "Keyring"
 msgstr "Привезак"
 
@@ -380,7 +360,7 @@ msgstr "Замењује податке у постојећој датотеци
 msgid "Report URI"
 msgstr "URI извештаја"
 
-#. TRANSLATORS: metadata is downloaded from the Internet
+#. TRANSLATORS: metadata is downloaded
 msgid "Requires internet connection"
 msgstr "Захтева везу са интернетом"
 
@@ -456,16 +436,12 @@ msgstr "Откључава уређај за приступ фирмверу"
 msgid "Update failure is a known issue, visit this URL for more information:"
 msgstr "Узрок неуспеха ажурирања је познат, погледајте ову адресу за више података:"
 
-#. TRANSLATORS: ask the user if we can update the metadata
+#. TRANSLATORS: ask if we can update metadata
 msgid "Update now?"
 msgstr "Ажурирати сада?"
 
 msgid "Update the stored device verification information"
 msgstr "Ажурирајте причуване податке потврђивања уређаја"
-
-#. TRANSLATORS: command description
-msgid "Updates all firmware to latest versions available"
-msgstr "Ажурира сав фирмвер на последња доступна издања"
 
 #. TRANSLATORS: the first replacement is a display name
 #. * e.g. "ColorHugALS" and the second and third are

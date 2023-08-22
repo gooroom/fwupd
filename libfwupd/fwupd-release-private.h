@@ -6,16 +6,17 @@
 
 #pragma once
 
-#include <glib-object.h>
 #include <json-glib/json-glib.h>
 
 #include "fwupd-release.h"
 
 G_BEGIN_DECLS
 
-GVariant	*fwupd_release_to_variant		(FwupdRelease	*release);
-void		 fwupd_release_to_json			(FwupdRelease *release,
-							 JsonBuilder *builder);
+GVariant *
+fwupd_release_to_variant(FwupdRelease *self);
+void
+fwupd_release_to_json(FwupdRelease *self, JsonBuilder *builder);
+void
+fwupd_release_incorporate(FwupdRelease *self, FwupdRelease *donor);
 
 G_END_DECLS
-

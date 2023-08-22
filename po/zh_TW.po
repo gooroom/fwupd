@@ -15,7 +15,7 @@ msgstr ""
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. more than a minute
+#. TRANSLATORS: more than a minute
 #, c-format
 msgid "%.0f minute remaining"
 msgid_plural "%.0f minutes remaining"
@@ -86,15 +86,12 @@ msgstr "必須先通過身份核對才能更新這臺機器上的韌體"
 msgid "Authentication is required to update the stored checksums for the device"
 msgstr "必須先通過身份核對才能更新裝置的儲存校驗計算碼"
 
-#. TRANSLATORS: command description
-msgid "Build firmware using a sandbox"
-msgstr "使用沙箱建置韌體"
-
 #. TRANSLATORS: this is to abort the interactive prompt
 msgid "Cancel"
 msgstr "取消"
 
 #. TRANSLATORS: this is when a device ctrl+c's a watch
+#. TRANSLATORS: this is from ctrl+c
 msgid "Cancelled"
 msgstr "已取消"
 
@@ -105,18 +102,6 @@ msgstr "已變更"
 #. TRANSLATORS: remote checksum
 msgid "Checksum"
 msgstr "校驗計算碼"
-
-#. TRANSLATORS: get interactive prompt
-msgid "Choose a device:"
-msgstr "選擇裝置："
-
-#. TRANSLATORS: get interactive prompt
-msgid "Choose a release:"
-msgstr "選擇發行版："
-
-#. TRANSLATORS: command description
-msgid "Clears any updates scheduled to be updated offline"
-msgstr "清除任何排程好的離線更新"
 
 #. TRANSLATORS: command description
 msgid "Clears the results from the last update"
@@ -138,6 +123,7 @@ msgstr "除錯選項"
 msgid "Decompressing…"
 msgstr "解壓縮中…"
 
+#. TRANSLATORS: description of BIOS setting
 #. TRANSLATORS: multiline description of device
 msgid "Description"
 msgstr "描述說明"
@@ -180,10 +166,6 @@ msgstr "顯示版本"
 #. TRANSLATORS: command line option
 msgid "Do not check for old metadata"
 msgstr "不要檢查中介資料是否老舊"
-
-#. TRANSLATORS: command line option
-msgid "Do not check for reboot after update"
-msgstr "不要檢查是否更新後要重新開機"
 
 #. TRANSLATORS: command line option
 msgid "Do not check for unreported history"
@@ -358,9 +340,6 @@ msgstr "在裝置上安裝韌體 blob"
 msgid "Install a firmware file on this hardware"
 msgstr "在此硬體安裝韌體檔案"
 
-msgid "Install old version of system firmware"
-msgstr "安裝舊版本的系統韌體"
-
 msgid "Install signed device firmware"
 msgstr "安裝已簽署的裝置韌體"
 
@@ -382,6 +361,7 @@ msgstr "安裝韌體更新中…"
 msgid "Installing on %s…"
 msgstr "正安裝到 %s…"
 
+#. TRANSLATORS: keyring type, e.g. GPG or PKCS7
 msgid "Keyring"
 msgstr "鑰匙圈"
 
@@ -505,7 +485,7 @@ msgstr "取代既有韌體檔案中的資料"
 msgid "Report URI"
 msgstr "報告 URI"
 
-#. TRANSLATORS: metadata is downloaded from the Internet
+#. TRANSLATORS: metadata is downloaded
 msgid "Requires internet connection"
 msgstr "必須有網際網路連線"
 
@@ -616,16 +596,12 @@ msgstr "取消更新期間的除錯旗標設定"
 msgid "Update failure is a known issue, visit this URL for more information:"
 msgstr "更新失敗是已知議題，請造訪此 URL 瞭解更多資訊："
 
-#. TRANSLATORS: ask the user if we can update the metadata
+#. TRANSLATORS: ask if we can update metadata
 msgid "Update now?"
 msgstr "是否立刻更更新？"
 
 msgid "Update the stored device verification information"
 msgstr "更新儲存的裝置核驗資訊"
-
-#. TRANSLATORS: command description
-msgid "Updates all firmware to latest versions available"
-msgstr "將所有韌體更新至可用的最新版本"
 
 #. TRANSLATORS: the first replacement is a display name
 #. * e.g. "ColorHugALS" and the second and third are

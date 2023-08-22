@@ -4,6 +4,8 @@ export XDG_CACHE_HOME=$SNAP_USER_COMMON/.cache
 mkdir -p $XDG_CACHE_HOME
 export GIO_MODULE_DIR=$XDG_CACHE_HOME/gio-modules
 export XDG_DATA_DIRS="$SNAP/usr/share"
+export FWUPD_LOCKDIR=/run/lock/snap.fwupd
+export FWUPD_POLKIT_NOCHECK=1
 
 #determine architecture
 if [ "$SNAP_ARCH" = "amd64" ]; then
@@ -17,12 +19,13 @@ else
 fi
 
 # don't update between versions, we want to preserve previous data
-[ ! -d "$SNAP_USER_DATA/etc" ] && cp -R "$SNAP/etc" "$SNAP_USER_DATA"
-[ ! -d "$SNAP_USER_DATA/var" ] && cp -R "$SNAP/var" "$SNAP_USER_DATA"
+[ ! -d "$SNAP_USER_DATA/etc" ] && [ -d "$SNAP/etc" ] && cp -R "$SNAP/etc" "$SNAP_USER_DATA"
+[ ! -d "$SNAP_USER_DATA/var" ] && [ -d "$SNAP/var" ] && cp -R "$SNAP/var" "$SNAP_USER_DATA"
 
 # re-generate gio modules in local cache
 needs_update=true
 if [ -f $SNAP_USER_DATA/.last_revision ]; then
+  # shellcheck source=/dev/null
   . $SNAP_USER_DATA/.last_revision 2>/dev/null
 fi
 if [ "$SNAP_DESKTOP_LAST_REVISION" = "$SNAP_REVISION" ]; then
