@@ -15,7 +15,7 @@ jobs:
     outputs:
       snap_name: ${{ steps.snapcraft.outputs.snap }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - uses: snapcore/action-build@v1
